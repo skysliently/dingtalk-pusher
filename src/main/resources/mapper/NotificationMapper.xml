@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.skysilently.dingtalk.mapper.NotificationMapper">
+
+    <resultMap id="BaseResultMap" type="com.github.skysilently.dingtalk.module.dao.NotificationDO">
+        <id column="id" property="id"/>
+        <result column="source" property="source"/>
+        <result column="info_title" property="infoTitle"/>
+        <result column="type" property="type"/>
+        <result column="link" property="link"/>
+        <result column="description" property="description"/>
+        <result column="publish_date" property="publishDate"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="detail_img" property="detailImg"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,`source`,info_title,`type`,link,description,publish_date,create_time,update_time,detail_img
+    </sql>
+
+    <select id="getAllNotifications" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from polu_sec_notification_info
+    </select>
+
+    <select id="getNotificationsBySourceAndTypeAndLimitNum" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from polu_sec_notification_info
+        where `type` = #{type}
+        and `source` = #{source}
+        order by id desc
+        limit #{limitNum}
+    </select>
+
+    <select id="getWarningNotificationsWithoutSelfLimit2Days" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from polu_sec_notification_info
+        where date_sub(CURDATE(),INTERVAL 2 DAY) &lt;= DATE(publish_date)
+        and `type` = 'warning'
+        <!-- AND `source` &lt;&gt; #{source} -->
+        AND `source` = #{source}
+        order by id desc
+    </select>
+
+    <insert id="addNotification" parameterType="com.github.skysilently.dingtalk.module.dao.NotificationDO">
+        <selectKey resultType="java.lang.Long" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into polu_sec_notification_info(`source`,info_title,`type`,link,description,publish_date,detail_img)
+        values(#{source},#{infoTitle},#{type},#{link},#{description},#{publishDate},#{detailImg})
+    </insert>
+
+</mapper>

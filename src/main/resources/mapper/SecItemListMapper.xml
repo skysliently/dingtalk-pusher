@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.skysilently.dingtalk.mapper.SecItemListMapper">
+
+    <resultMap id="BaseResultMap" type="com.github.skysilently.dingtalk.module.dao.SecItemListDO">
+        <id column="id" property="id"/>
+        <result column="plugin" property="plugin"/>
+        <result column="item" property="item"/>
+        <result column="create_time" property="createTime"/>
+        <result column="sec_inform_link" property="secInformLink"/>
+        <result column="risk" property="risk"/>
+        <result column="description" property="description"/>
+        <result column="cve_id" property="cveId"/>
+<!--        <result column="publish_time" property="publishTime"/>-->
+        <result column="publish_time_origin" property="publishTimeOrigin"/>
+        <result column="version_range" property="versionRange"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,plugin,item,create_time,sec_inform_link,risk,description,cve_id,publish_time_origin,version_range
+    </sql>
+
+    <select id="getLastSecItemList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from polu_opensource_sec_update
+        where plugin = #{plugin}
+        order by id desc
+        limit 1
+    </select>
+
+    <select id="getLast3SecItemList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from polu_opensource_sec_update
+        where plugin = #{plugin}
+        order by id desc
+        limit 3
+    </select>
+
+    <select id="getAllSecItemList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from polu_opensource_sec_update
+        where plugin = #{plugin}
+        order by id desc
+    </select>
+
+    <insert id="addSecItem" parameterType="com.github.skysilently.dingtalk.module.dao.NotificationDO">
+        <selectKey resultType="java.lang.Long" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into polu_opensource_sec_update(plugin,item,sec_inform_link,risk,description,cve_id,publish_time,publish_time_origin,version_range)
+        values(#{plugin},#{item},#{secInformLink},#{risk},#{description},#{cveId},#{publishTime},#{publishTimeOrigin},#{versionRange})
+    </insert>
+
+</mapper>
