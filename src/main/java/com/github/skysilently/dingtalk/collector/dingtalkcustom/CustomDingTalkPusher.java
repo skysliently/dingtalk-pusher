@@ -27,6 +27,8 @@ import java.util.Map;
 public class CustomDingTalkPusher {
 
 //    群机器人
+    private String dingTalkWebHook = "https://oapi.dingtalk.com/robot/send?access_token=989e6a2ed756115767145b26fafbed7d542c3630a871b7d5cc04c81ee7dd4999";
+    private String secret = "SEC2be1984799c5136f218cb59a38b985067abbafb774c2492b41aaf5dfb0cb6575";
 
     private Long timestamp = System.currentTimeMillis();
 
@@ -43,7 +45,7 @@ public class CustomDingTalkPusher {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String requestBody = "{\n" +
-                "    \"keyword\": \"ZSEC\",\n" +
+                "    \"keyword\": \"\",\n" +
                 "    \"msgtype\": \"feedCard\",\n" +
                 "    \"feedCard\": {\n" +
                 "        \"links\": [";
@@ -51,7 +53,7 @@ public class CustomDingTalkPusher {
         for (NotificationModel n :
                 notificationModelArrayList) {
             requestBody += "{\n" +
-                    "                \"title\": \"" + "[ZSEC] " + n.getInfoTitle() + "\", \n" +
+                    "                \"title\": \"" + "[] " + n.getInfoTitle() + "\", \n" +
                     "                \"messageURL\": \"" + n.getLink() + "\", \n" +
 //                    "                \"picURL\": \"" + Jsoup.connect(n.getLink()).get().select(".news-conent").select("img").first().attr("src") + "\"\n" +
                     "                \"picURL\": \"" + n.getDetailImg() + "\"\n" +
@@ -77,7 +79,7 @@ public class CustomDingTalkPusher {
                 "{\n" +
                 "     \"msgtype\": \"text\",\n" +
                 "     \"text\": {\n" +
-                "         \"content\": \"" + "[ZSEC] " + msg + "\"\n" +
+                "         \"content\": \"" + "[] " + msg + "\"\n" +
                 "     }" +
                 " }";
 
@@ -96,7 +98,7 @@ public class CustomDingTalkPusher {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         StringBuilder text = new StringBuilder();
-        text.append("## [ZSEC]360每日简报  \\n  ");
+        text.append("## []360每日简报  \\n  ");
         for (String key :
                 dailyMap.keySet()) {
             text.append("### "+ key +"  \\n  ");
@@ -110,7 +112,7 @@ public class CustomDingTalkPusher {
                 "{\n" +
                 "     \"msgtype\": \"markdown\",\n" +
                 "     \"markdown\": {\n" +
-                "         \"title\":\"[ZSEC] 360每日简报\",\n" +
+                "         \"title\":\"[] 360每日简报\",\n" +
                 "         \"text\": \"" + text.toString().replaceAll("\""," ") + "\"\n" +
                 "     }\n" +
                 " }";
@@ -122,4 +124,18 @@ public class CustomDingTalkPusher {
                         "&sign=" + this.getSign(), HttpMethod.POST, httpEntity, String.class);
         log.info("DingTalk Response: {}",responseEntity.getBody());
     }
+
+    public void pushText(String text) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+        RestTemplate restTemplate = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        String requestBody = text;
+        HttpEntity<String> httpEntity = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<String> responseEntity = restTemplate
+                .exchange(dingTalkWebHook +
+                        "&timestamp=" + this.getTimestamp() +
+                        "&sign=" + this.getSign(), HttpMethod.POST, httpEntity, String.class);
+//        System.out.println(responseEntity.getBody());
+    }
+
 }

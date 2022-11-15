@@ -31,7 +31,7 @@ public class PoluUtil {
                 "  \"assetsType\": \"THIRD_PARTY_COMPONENTS\"," +
                 "  \"riskCode\": \"THIRD_PARTY_COMPONENT_RISK\"," +
                 "  \"createAt\": " + System.currentTimeMillis() + "," +
-                "  \"remark\": \"ZSec风险信息收集——" + remarkName +"风险探测\"," +
+                "  \"remark\": \"风险信息收集——" + remarkName +"风险探测\"," +
                 "  \"pluginRiskName\": \"" + secItemListModel.getItem().split("\n")[0] + "\"," +
                 "  \"pluginSource\": \"" + secItemListModel.getSecInformLink() + "\"," +
                 "  \"pluginAppName\": \"" + appDependencyModel.getAppName() + "\"," +

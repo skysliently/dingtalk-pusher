@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @create 2022-11-03 19:50
  **/
 @Slf4j
-@Component
+//@Component
 @EnableScheduling
 public class AnQuanNeiCanSchedule {
 
